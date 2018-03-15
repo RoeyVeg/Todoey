@@ -34,6 +34,12 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Todoey" id="c1w-Eg-KSo">
                         <barButtonItem key="backBarButtonItem" title="back" id="tN2-F7-6Pu"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="RiS-Jz-Lze">
+                            <color key="tintColor" red="0.99942404029999998" green="0.98555368190000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="Pn8-ns-B0O" id="hyE-7e-TsY"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BLb-6X-FQE" userLabel="First Responder" sceneMemberID="firstResponder"/>

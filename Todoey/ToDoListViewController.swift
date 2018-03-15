@@ -11,7 +11,7 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     
-    let itemArray = ["first to do", "second to do", "third to do"]
+    var itemArray = ["first to do", "second to do", "third to do"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,27 +53,68 @@ class ToDoListViewController: UITableViewController {
         
         }
     
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let delete = UITableViewRowAction(style: .default, title: "Delete") { (action:UITableViewRowAction, indexPath:IndexPath) in
-           // print("delete at:\(indexPath)")
+    
+    //barbutton - add new item
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        
+        let alert = UIAlertController(title: "Add new Todoey item", message: "", preferredStyle: .alert)
+        
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField // textField is a global variable that grabs a reference to alertTextField
             
-            
-          //  tableView.deleteRows(at: [indexPath], with: .automatic)
         }
         
-        delete.backgroundColor = .red
         
+        let action = UIAlertAction(title: "Add item", style: .default) { (actio) in
+            print("success")
+            
+            self.itemArray.append(textField.text!)
+            self.tableView.reloadData()
+          
+          //  print(alert.textFields!.last!.text!)
+            // print(alert.alertTextField.text)
+            
+            
+        }
+        
+        
+        alert.addAction(action) // adding my defined action to alert controller
+        
+        
+        
+        present(alert, animated: true, completion: nil)
+        
+        
+    }
+    
+    
+        //MARK-add delete when swiping
+//    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+//        let delete = UITableViewRowAction(style: .default, title: "Delete") { (action:UITableViewRowAction, indexPath:IndexPath) in
+//           // print("delete at:\(indexPath)")
+//
+//
+//          //  tableView.deleteRows(at: [indexPath], with: .automatic)
+//        }
+//
+//        delete.backgroundColor = .red
+//
 //        let more = UITableViewRowAction(style: .default, title: "More") { (action:UITableViewRowAction, indexPath:IndexPath) in
 //            print("more at:\(indexPath)")
 //        }
 //        more.backgroundColor = .orange
-        
-        return [delete]
-    }
+//
+//        return [delete]
+//    }
     
 
 
-   
 
 }
 
