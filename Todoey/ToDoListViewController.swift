@@ -11,10 +11,31 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     
-    var itemArray = ["first to do", "second to do", "third to do"]
+    var itemArray = [Items]()
+    
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        let item1 = Items()
+        item1.title = "item1"
+        itemArray.append(item1)
+        
+        let item2 = Items()
+        item2.title = "item2"
+        itemArray.append(item2)
+        
+        let item3 = Items()
+        item3.title = "item3"
+        itemArray.append(item3)
+        
+        if let items = defaults.array(forKey: "ToDoItemsArray") as? [Items] {
+            itemArray = items
+        }
+        
+        
     }
     
     
@@ -24,10 +45,29 @@ class ToDoListViewController: UITableViewController {
         return itemArray.count
     }
     
+    // below - how we should disply each cell
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        let item = itemArray[indexPath.row]
+        
+        cell.textLabel?.text = item.title
+        
+        // Ternary operator
+        // value - what I want to set
+        // condition is the if check
+        // value = condition ? value if ture : value if false
+        
+        cell.accessoryType = item.done ? .checkmark : .none
+        
+//      --> instead of the below
+//        if item.done {
+//            cell.accessoryType = .checkmark
+//        } else {
+//            cell.accessoryType = .none
+//        }
+        
         return cell
         
     }
@@ -38,17 +78,21 @@ class ToDoListViewController: UITableViewController {
         // print(itemArray[indexPath.row])
         
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-           
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+//        if itemArray[indexPath.row].done {
+//
+//            itemArray[indexPath.row].done = false
+//
+//        } else {
+//
+//            itemArray[indexPath.row].done = true
+//        }
+//          instead I can write the line below - equal the opposite (since it's a bool)
         
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         
         tableView.deselectRow(at: indexPath, animated: true) // removes the gray selecting
+        tableView.reloadData() // I recall the DataSource methos becuase I want to make the checkmark appear
         
         
         }
@@ -71,11 +115,17 @@ class ToDoListViewController: UITableViewController {
         }
         
         
-        let action = UIAlertAction(title: "Add item", style: .default) { (actio) in
+        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
             print("success")
             
-            self.itemArray.append(textField.text!)
+            let item = Items()
+            item.title = textField.text!
+            self.itemArray.append(item)
             self.tableView.reloadData()
+            
+           // self.itemArray.append(textField.text!)
+           // self.defaults.set(self.itemArray, forKey: "ToDoItemsArray")
+            
           
           //  print(alert.textFields!.last!.text!)
             // print(alert.alertTextField.text)
