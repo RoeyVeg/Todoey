@@ -13,28 +13,20 @@ class ToDoListViewController: UITableViewController {
     
     var itemArray = [Items]()
     
-    let defaults = UserDefaults.standard
+   // let defaults = UserDefaults.standard
+    
+    // create a document directory path the "FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)" is an Array of URLS -->
+
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-        let item1 = Items()
-        item1.title = "item1"
-        itemArray.append(item1)
+        loadItems()
         
-        let item2 = Items()
-        item2.title = "item2"
-        itemArray.append(item2)
-        
-        let item3 = Items()
-        item3.title = "item3"
-        itemArray.append(item3)
-        
-        if let items = defaults.array(forKey: "ToDoItemsArray") as? [Items] {
-            itemArray = items
-        }
-        
+
         
     }
     
@@ -89,6 +81,7 @@ class ToDoListViewController: UITableViewController {
 //          instead I can write the line below - equal the opposite (since it's a bool)
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        self.saveData() // calling the encoder to save the toggle of done - Yes / No
         
         
         tableView.deselectRow(at: indexPath, animated: true) // removes the gray selecting
@@ -123,11 +116,12 @@ class ToDoListViewController: UITableViewController {
             self.itemArray.append(item)
             self.tableView.reloadData()
             
-           // self.itemArray.append(textField.text!)
-           // self.defaults.set(self.itemArray, forKey: "ToDoItemsArray")
+            self.saveData() // calling the encoder to save the new item
             
           
-          //  print(alert.textFields!.last!.text!)
+            
+          
+          //  print(alert.textFields!.last!.text!) --> asked a question if I can use this instead of var textField
             // print(alert.alertTextField.text)
             
             
@@ -142,6 +136,44 @@ class ToDoListViewController: UITableViewController {
         
         
     }
+    
+    func saveData () {
+        
+        // I write the new element to the Item.plist file I created
+        // (1) need to create a encoder of PropertListEncoder()
+        // (2) encode the itemArray to data and to have a catch loop
+        // (3) write it to the URL
+        
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray) // data is an array
+            try data.write(to: dataFilePath!) // write can also throw an error
+            
+        } catch {
+            print("Error in encoding itemArray\(error)")
+        }
+        
+    }
+    
+    func loadItems() {
+        
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            
+            let decoder = PropertyListDecoder()
+            
+            do {
+                itemArray = try decoder.decode([Items].self, from: data) // I need to tell the decoder that the data type to decode is array of type Items, and to get the data from the data object I created whic is linked to dataFilePath
+            } catch {
+                
+                print("Error in getting the data\(error)")
+            }
+            
+            
+        }
+        
+    }
+    
     
     
         //MARK-add delete when swiping
@@ -164,7 +196,7 @@ class ToDoListViewController: UITableViewController {
 //    }
     
 
-
+//MARK-End of code
 
 }
 
